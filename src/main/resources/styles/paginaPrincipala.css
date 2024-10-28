@@ -1,0 +1,36 @@
+/*Butoanele din bara de navigare stanga*/
+#raportConsumBtn, #salaSportBtn, #corpABtn, #corpBBtn, #aula1Btn, #aula2Btn {
+  -fx-background-color: transparent;
+   -fx-text-fill: #ffffff;
+}
+#raportConsumBtn:hover, #salaSportBtn:hover, #corpABtn:hover, #corpBBtn:hover, #aula1Btn:hover, #aula2Btn:hover {
+    -fx-background-color: #A8261C;
+    -fx-cursor: hand;
+}
+/*Stilizarea tabelului*/
+.table-view {
+    -fx-background-color: #f4f4f4;
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 5px;
+}
+.table-view .column-header-background {
+    -fx-background-color: #f4f4f4;
+}
+.table-row-cell:hover {
+    -fx-background-color: #eeeeee;
+}
+.table-row-cell:selected {
+    -fx-background-color: #d1cfcf;
+    -fx-text-fill: #ffffff;
+}
+/*Stergere filtrare si aplicare filtrare*/
+#stergeFiltrari, #optiuniSala{
+    -fx-text-fill: #1f1a17;
+    -fx-background-color: #EFEFEF;
+    -fx-border-radius: 10;
+     -fx-background-radius: 10;
+}
+#stergeFiltrari:hover, #optiuniSala:hover{
+    -fx-cursor: hand;
+     -fx-background-color: #e3e3e3;
+}
