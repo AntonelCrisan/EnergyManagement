@@ -29,7 +29,7 @@ public class PaginaPrincipala implements Initializable {
     @FXML
     private Button stergeFiltrari;
     private  MenuItem selectedMenuItem;
-    private final int randuriPerPagina = 50;
+    private final int randuriPerPagina = 7;
     private ObservableList<String> optiuniSelectate = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
