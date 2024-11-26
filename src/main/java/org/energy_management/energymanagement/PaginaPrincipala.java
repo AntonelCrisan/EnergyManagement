@@ -28,15 +28,36 @@ public class PaginaPrincipala implements Initializable {
     private MenuButton optiuniSala;
     @FXML
     private Button stergeFiltrari;
+    @FXML
+    private Label consum_sala_sport, umiditate_sala_sport, consum_corpA, umiditate_corpA, consum_corpB, umiditate_corpB, consum_aula1, umiditate_aula1,
+            consum_aula2, umiditate_aula2, temperatura_exterioara, umiditate_exterioara;
     private  MenuItem selectedMenuItem;
     private final int randuriPerPagina = 7;
     private ObservableList<String> optiuniSelectate = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        afisareDateMonitorizate();
         handleTables();
         lastSelectedButton = raportConsumBtn;
         setButtonStyle(lastSelectedButton, true);
         stergeFiltrari.setVisible(false);
+    }
+    //Afisare date in prima pagina
+    public void afisareDateMonitorizate(){
+        List<Monitorizare> date = DataFetcher.getAllEntries();
+        Monitorizare ultimainregistrare = date.get(date.size() - 1);
+        consum_sala_sport.setText("Consum: " + ultimainregistrare.getConsumSalaSport() + "KWh");
+        consum_corpA.setText("Consum: " + ultimainregistrare.getConsumCorpA() + "KWh");
+        consum_corpB.setText("Consum: " + ultimainregistrare.getConsumCorpB() + "KWh");
+        consum_aula1.setText("Consum: " + ultimainregistrare.getConsumAula1() + "KWh");
+        consum_aula2.setText("Consum: " + ultimainregistrare.getConsumAula2() + "KWh");
+        umiditate_sala_sport.setText(ultimainregistrare.getUmiditateSalaSport() + "%");
+        umiditate_corpA.setText(ultimainregistrare.getUmiditateCorpA() + "%");
+        umiditate_corpB.setText(ultimainregistrare.getUmiditateCorpB() + "%");
+        umiditate_aula1.setText(ultimainregistrare.getUmiditateAula1() + "%");
+        umiditate_aula2.setText(ultimainregistrare.getUmiditateAula2() + "%");
+        temperatura_exterioara.setText(ultimainregistrare.getTemperaturaExterioara() + "°C");
+        umiditate_exterioara.setText(ultimainregistrare.getUmiditateExterioara() + "%");
     }
     public void handleTables(){
         //Setarea coloanelor cu nume
@@ -185,6 +206,7 @@ public class PaginaPrincipala implements Initializable {
         //Afisam paginile in functie de butonul pe care este apasat
         if (clickedButtonId.equals("raportConsumBtn")) {
             setPanelVisibility(homePanel, corpuriPanel);
+            afisareDateMonitorizate();
         } else if (clickedButtonId.equals("salaSportBtn")) {
             setPanelVisibility(corpuriPanel, homePanel);
             titluCorpuri.setText("SALA SPORT");

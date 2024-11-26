@@ -100,7 +100,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="Consum: 1234 kWh">
+                        <Label fx:id="consum_sala_sport" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -115,7 +115,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="Consum: 1234 kWh">
+                        <Label fx:id="consum_corpA" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -129,7 +129,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="Consum: 1234 kWh">
+                        <Label fx:id="consum_corpB" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -143,7 +143,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="Consum: 1234 kWh">
+                        <Label fx:id="consum_aula1" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -157,7 +157,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="Consum: 1234 kWh">
+                        <Label fx:id="consum_aula2" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -175,7 +175,7 @@
                               <Font name="System Bold" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="33.5 °C">
+                        <Label fx:id="umiditate_sala_sport" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -189,7 +189,7 @@
                               <Font name="System Bold" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="33.5%">
+                        <Label fx:id="umiditate_corpA" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -203,7 +203,7 @@
                               <Font name="System Bold" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="33.5%">
+                        <Label fx:id="umiditate_corpB" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -217,7 +217,7 @@
                               <Font name="System Bold" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="33.5%">
+                        <Label fx:id="umiditate_aula1" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -231,7 +231,7 @@
                               <Font name="System Bold" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="33.5%">
+                        <Label fx:id="umiditate_aula2" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -251,7 +251,7 @@
                               <Font name="System Bold" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="33.5 °C">
+                        <Label fx:id="temperatura_exterioara" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>
@@ -266,7 +266,7 @@
                               <Font name="System Bold" />
                            </font>
                         </Label>
-                        <Label layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;" text="33.5%">
+                        <Label fx:id="umiditate_exterioara" layoutX="20.0" layoutY="60.0" style="-fx-text-fill: #1f1a17;">
                            <font>
                               <Font />
                            </font>

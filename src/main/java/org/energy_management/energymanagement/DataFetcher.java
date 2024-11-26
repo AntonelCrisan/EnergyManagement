@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 //Clasa pentru aducerea datelor din baza de date
@@ -58,5 +61,36 @@ public class DataFetcher {
             e.printStackTrace();
         }
         return numberRow;
+    }
+
+    //Metoda pentru a obtine datele din baza de date
+    public static List<Monitorizare> getAllEntries() {
+        List<Monitorizare> data = new ArrayList<>();
+        String query = "SELECT consum_sala_sport, umiditate_sala_sport, consum_corpA, umiditate_corpA, consum_corpB, umiditate_corpB, consum_aula1," +
+                " umiditate_aula1, consum_aula2, umiditate_aula2, temperatura_exterioara, umiditate_exterioara " +
+                "FROM monitorizare_cladiri ORDER BY id DESC LIMIT 1";
+        try (Connection connection = ConectareBazaDate.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            while (resultSet.next()) {
+                data.add(new Monitorizare(
+                        resultSet.getFloat("consum_sala_sport"),
+                        resultSet.getFloat("umiditate_sala_sport"),
+                        resultSet.getFloat("consum_corpA"),
+                        resultSet.getFloat("umiditate_corpA"),
+                        resultSet.getFloat("consum_corpB"),
+                        resultSet.getFloat("umiditate_corpB"),
+                        resultSet.getFloat("consum_aula1"),
+                        resultSet.getFloat("umiditate_aula1"),
+                        resultSet.getFloat("consum_aula2"),
+                        resultSet.getFloat("umiditate_aula2"),
+                        resultSet.getFloat("temperatura_exterioara"),
+                        resultSet.getFloat("umiditate_exterioara")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
     }
 }
