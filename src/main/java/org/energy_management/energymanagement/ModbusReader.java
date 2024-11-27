@@ -1,5 +1,4 @@
 package org.energy_management.energymanagement;
-
 import com.ghgande.j2mod.modbus.ModbusException;
 import com.ghgande.j2mod.modbus.io.ModbusTCPTransaction;
 import com.ghgande.j2mod.modbus.msg.ReadInputRegistersRequest;
@@ -15,12 +14,12 @@ import java.util.concurrent.TimeUnit;
 
 public class ModbusReader {
 
-    // Modbus TCP parametersd
+    // Modbus TCP parameters
     private static final String MODBUS_IP = "192.168.1.10"; // IP of your PXr10 relay
     private static final int MODBUS_PORT = 502; // Default Modbus TCP port
 
     // Array of Unit IDs (Modbus devices) you want to query
-    private static final int[] UNIT_IDS = {1, 2, 3}; // Add more Unit IDs as needed
+    private static final int[] UNIT_IDS = {1}; // Add more Unit IDs as needed
 
     // Array of specific registers you want to read (starting address for floating-point values)
     private static final int[] REGISTER_ADDRESSES = {406147, 406149, 406151, 406159, 406161, 406163, 406187, 406189, 406191, 406309, 406313, 406329, 406547};
@@ -34,22 +33,23 @@ public class ModbusReader {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         // Task to fetch Modbus data
+
         Runnable fetchModbusData = () -> {
             try {
                 // Step 1: Connect to the Modbus TCP device
                 InetAddress address = InetAddress.getByName(MODBUS_IP);
                 TCPMasterConnection connection = new TCPMasterConnection(address); // Establish a connection
                 connection.setPort(MODBUS_PORT);
-                connection.connect(); // Open the connection
+                // Open the connection
                 System.out.println("Connected to Modbus device at: " + MODBUS_IP);
-
+                connection.connect();
                 // Step 2: Loop over the Unit IDs (for each Modbus device)
                 for (int unitId : UNIT_IDS) {
                     System.out.println("\nReading from Unit ID: " + unitId);
 
                     // Step 3: Loop over the specific register addresses for floating-point data
-                    for (int i = 0; i < REGISTER_ADDRESSES.length; i++) { //aici a fost FLOATING_POINT_REGISTER_ADDRESSES
-                        int registerAddress = REGISTER_ADDRESSES[i]; //aici a fost FLOATING_POINT_REGISTER_ADDRESSES
+                    for (int i = 0; i < REGISTER_ADDRESSES.length; i++) {
+                        int registerAddress = REGISTER_ADDRESSES[i];
                         float scaleFactor = SCALE_FACTORS[i]; // Get the corresponding scale factor
 
                         // Read two registers for a single floating-point value
@@ -95,6 +95,6 @@ public class ModbusReader {
         };
 
         // Schedule the task to run every 2 minutes (120 seconds)
-        scheduler.scheduleAtFixedRate(fetchModbusData, 0, 2, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(fetchModbusData, 0, 20, TimeUnit.SECONDS);
     }
 }
