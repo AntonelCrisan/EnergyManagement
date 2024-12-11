@@ -1,100 +1,83 @@
 package org.energy_management.energymanagement;
+
 import com.ghgande.j2mod.modbus.ModbusException;
-import com.ghgande.j2mod.modbus.io.ModbusTCPTransaction;
+import com.ghgande.j2mod.modbus.io.ModbusSerialTransaction;
 import com.ghgande.j2mod.modbus.msg.ReadInputRegistersRequest;
 import com.ghgande.j2mod.modbus.msg.ReadInputRegistersResponse;
-import com.ghgande.j2mod.modbus.net.TCPMasterConnection;
+import com.ghgande.j2mod.modbus.net.SerialConnection;
+import com.ghgande.j2mod.modbus.util.SerialParameters;
 
-import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class ModbusReader {
 
-    // Modbus TCP parameters
-    private static final String MODBUS_IP = "192.168.1.10"; // IP of your PXr10 relay
-    private static final int MODBUS_PORT = 502; // Default Modbus TCP port
-
-    // Array of Unit IDs (Modbus devices) you want to query
-    private static final int[] UNIT_IDS = {1}; // Add more Unit IDs as needed
-
-    // Array of specific registers you want to read (starting address for floating-point values)
-    private static final int[] REGISTER_ADDRESSES = {406147, 406149, 406151, 406159, 406161, 406163, 406187, 406189, 406191, 406309, 406313, 406329, 406547};
-
-
-    // Array of scale factors corresponding to each register
-    private static final float[] SCALE_FACTORS = {10, 10, 10, 10, 10, 10, 1, 1, 1, 1, 1, 1, 1}; // Example scale factors for each register
+    // Parametrii Modbus RTU
+    private static final String SERIAL_PORT = "COM3"; // Portul serial (de exemplu, COM3 pe Windows)
+    private static final int BAUD_RATE = 9600;        // Baud rate-ul serial
+    private static final int UNIT_ID = 1;             // ID-ul Unității Modbus (slave)
+    private static final int[] REGISTER_ADDRESSES = {0, 2, 4, 6}; // Registrele de citit (exemplu)
+    private static final float[] SCALE_FACTORS = {10, 10, 1, 1}; // Factori de scalare pentru fiecare registru
 
     public static void main(String[] args) {
-        // ScheduledExecutorService to run the task every 2 minutes
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        SerialConnection connection = null;
 
-        // Task to fetch Modbus data
+        try {
+            // Configurarea parametrilor seriali
+            SerialParameters params = new SerialParameters();
+            params.setPortName(SERIAL_PORT);
+            params.setBaudRate(BAUD_RATE);
+            params.setDatabits(8);
+            params.setParity("None");
+            params.setStopbits(1);
+            params.setEncoding("rtu"); // Modbus RTU
 
-        Runnable fetchModbusData = () -> {
-            try {
-                // Step 1: Connect to the Modbus TCP device
-                InetAddress address = InetAddress.getByName(MODBUS_IP);
-                TCPMasterConnection connection = new TCPMasterConnection(address); // Establish a connection
-                connection.setPort(MODBUS_PORT);
-                // Open the connection
-                System.out.println("Connected to Modbus device at: " + MODBUS_IP);
-                connection.connect();
-                // Step 2: Loop over the Unit IDs (for each Modbus device)
-                for (int unitId : UNIT_IDS) {
-                    System.out.println("\nReading from Unit ID: " + unitId);
+            // Inițializarea conexiunii seriale
+            connection = new SerialConnection(params);
+            connection.open();
+            System.out.println("Connected to Modbus RTU device via " + SERIAL_PORT);
 
-                    // Step 3: Loop over the specific register addresses for floating-point data
-                    for (int i = 0; i < REGISTER_ADDRESSES.length; i++) {
-                        int registerAddress = REGISTER_ADDRESSES[i];
-                        float scaleFactor = SCALE_FACTORS[i]; // Get the corresponding scale factor
+            // Citirea registrelor
+            for (int i = 0; i < REGISTER_ADDRESSES.length; i++) {
+                int registerAddress = REGISTER_ADDRESSES[i];
+                float scaleFactor = SCALE_FACTORS[i];
 
-                        // Read two registers for a single floating-point value
-                        ReadInputRegistersRequest request = new ReadInputRegistersRequest(registerAddress, 2); // Reading 2 registers
-                        request.setUnitID(unitId); // Set the Modbus Unit ID for each device
+                // Pregătirea cererii Modbus
+                ReadInputRegistersRequest request = new ReadInputRegistersRequest(registerAddress, 2);
+                request.setUnitID(UNIT_ID);
 
-                        // Create and execute the Modbus transaction
-                        ModbusTCPTransaction transaction = new ModbusTCPTransaction(connection);
-                        transaction.setRequest(request);
-                        transaction.execute();
+                ModbusSerialTransaction transaction = new ModbusSerialTransaction(connection);
+                transaction.setRequest(request);
 
-                        // Get the response and extract the register values
-                        ReadInputRegistersResponse response = (ReadInputRegistersResponse) transaction.getResponse();
-                        int highRegister = response.getRegisterValue(0); // First register (high word)
-                        int lowRegister = response.getRegisterValue(1);  // Second register (low word)
+                // Executarea tranzacției
+                transaction.execute();
+                ReadInputRegistersResponse response = (ReadInputRegistersResponse) transaction.getResponse();
 
-                        // Combine the two registers into a single 32-bit integer
-                        int combinedValue = (highRegister << 16) | (lowRegister & 0xFFFF);
+                // Procesarea valorilor din registre
+                int highRegister = response.getRegisterValue(0);
+                int lowRegister = response.getRegisterValue(1);
 
-                        // Convert the 32-bit integer to a float using ByteBuffer
-                        float rawFloatValue = ByteBuffer.allocate(4)
-                                .order(ByteOrder.BIG_ENDIAN) // Set the byte order (endianness)
-                                .putInt(combinedValue)       // Put the combined value
-                                .getFloat(0);                // Get the float value
+                int combinedValue = (highRegister << 16) | (lowRegister & 0xFFFF);
+                float rawFloatValue = ByteBuffer.allocate(4)
+                        .order(ByteOrder.BIG_ENDIAN)
+                        .putInt(combinedValue)
+                        .getFloat(0);
 
-                        // Apply the scale factor
-                        float scaledValue = rawFloatValue * scaleFactor;
+                float scaledValue = rawFloatValue * scaleFactor;
 
-                        // Output the scaled floating-point value
-                        System.out.printf("Unit ID %d - Floating Point Address %d: Raw Value = %.2f, Scaled Value = %.2f%n", unitId, registerAddress, rawFloatValue, scaledValue);
-                    }
-                }
+                // Afișarea valorilor
+                System.out.printf("Register Address %d: Raw Value = %.2f, Scaled Value = %.2f%n", registerAddress, rawFloatValue, scaledValue);
+            }
 
-                // Step 4: Close the connection
+        } catch (ModbusException e) {
+            System.err.println("Modbus exception: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
                 connection.close();
                 System.out.println("Connection closed.");
-
-            } catch (ModbusException | java.net.UnknownHostException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
-        };
-
-        // Schedule the task to run every 2 minutes (120 seconds)
-        scheduler.scheduleAtFixedRate(fetchModbusData, 0, 20, TimeUnit.SECONDS);
+        }
     }
 }
